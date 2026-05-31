@@ -14,10 +14,12 @@ config.color_scheme = scheme_for_appearance(wezterm.gui.get_appearance())
 
 -- Font
 -- Прошлые шрифты и их настройки — в README.md.
-config.font = wezterm.font("Iosevka Nerd Font Mono")
+-- weight = DemiBold: Regular/Medium у Iosevka дают заметно тонкую кириллицу относительно латиницы.
+config.font = wezterm.font({ family = "Iosevka Nerd Font Mono", weight = "DemiBold" })
 config.font_size = 19
--- Аналог font-thicken: усиление рендера через freetype.
-config.freetype_load_target = "Light"
+-- Аналог font-thicken: Normal load target + HorizontalLcd рендер.
+-- Light, вопреки названию, отключает часть хинтинга и делает штрихи тоньше — не использовать.
+config.freetype_load_target = "Normal"
 config.freetype_render_target = "HorizontalLcd"
 
 -- Cursor
@@ -48,6 +50,11 @@ config.keys = {
   { key = "RightArrow", mods = "CMD", action = act.ActivateTabRelative(1) },
   { key = "LeftArrow", mods = "CMD|SHIFT", action = act.MoveTabRelative(-1) },
   { key = "RightArrow", mods = "CMD|SHIFT", action = act.MoveTabRelative(1) },
+
+  -- Shift+Enter → ESC + CR: перенос строки в Claude Code и других TUI
+  -- через Zellij. Plain Enter в Zellij перехвачен для autolock,
+  -- Shift+Enter под тот биндинг не подпадает.
+  { key = "Enter", mods = "SHIFT", action = act.SendString("\x1b\r") },
 }
 
 -- Copy on select: завершение выделения копирует в системный буфер.

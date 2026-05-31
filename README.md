@@ -20,8 +20,8 @@
 
 ### Шрифт
 
-- `Iosevka Nerd Font Mono`, размер 19.
-- `freetype_load_target = 'Light'` + `freetype_render_target = 'HorizontalLcd'` — аналог ghostty-шной `font-thicken`: чуть «жирнее» рендер на Retina без перехода на bold-начертание.
+- `Iosevka Nerd Font Mono`, вес `DemiBold`, размер 19. У Iosevka Regular и даже Medium кириллица заметно тоньше латиницы; DemiBold выравнивает плотность и хорошо читается на Retina.
+- `freetype_load_target = 'Normal'` + `freetype_render_target = 'HorizontalLcd'` — аналог ghostty-шной `font-thicken`: subpixel-рендер на Retina с полноценным хинтингом. Раньше стоял `Light`, но он, вопреки названию, отключает часть хинтинга и делает штрихи ещё тоньше.
 
 ### Курсор
 
@@ -59,6 +59,7 @@ send_composed_key_when_right_alt_is_pressed = true   -- правый Option = к
 | `Alt+←/→/↑/↓` | Шлют корректные CSI (`ESC [1;3D/C/A/B`). Без явного бинда zellij ловил бы macOS-композицию (`ESC f` / `ESC b`) и трактовал её как `Alt+f` → `ToggleFloatingPanes`. |
 | `Cmd+←` / `Cmd+→` | Предыдущий / следующий таб (как в iTerm2). |
 | `Cmd+Shift+←` / `Cmd+Shift+→` | Подвинуть текущий таб влево / вправо. |
+| `Shift+Enter` | Шлёт `ESC\r` — перенос строки в Claude Code и других TUI, запущенных через Zellij. Plain `Enter` в Zellij перехвачен под autolock, `Shift+Enter` под этот биндинг не подпадает. |
 
 ### Мышь
 
@@ -80,13 +81,14 @@ send_composed_key_when_right_alt_is_pressed = true   -- правый Option = к
 | --- | --- |
 | `theme = dark:Gruvbox Dark,light:Gruvbox Light` | `wezterm.gui.get_appearance()` + `color_scheme` |
 | `font-family`, `font-size` | `font`, `font_size` |
-| `font-thicken`, `font-thicken-strength` | `freetype_load_target = 'Light'` + `HorizontalLcd` |
+| `font-thicken`, `font-thicken-strength` | `freetype_load_target = 'Normal'` + `HorizontalLcd`, плюс `weight = 'DemiBold'` |
 | `cursor-style = block`, `cursor-style-blink = true` | `default_cursor_style = 'BlinkingBlock'`, `cursor_blink_rate` |
 | `macos-titlebar-style = native`, `macos-titlebar-proxy-icon = visible` | `window_decorations = 'TITLE \| RESIZE'` |
 | `macos-option-as-alt = left` | `send_composed_key_when_left_alt_is_pressed = false` |
 | `keybind = alt+<dir>=text:\x1b[1;3<X>` | `act.SendString('\x1b[1;3<X>')` |
 | `keybind = cmd+left/right = previous/next_tab` | `act.ActivateTabRelative(±1)` |
 | `keybind = cmd+shift+left/right = move_tab:±1` | `act.MoveTabRelative(±1)` |
+| нет аналога (Ghostty шлёт `Shift+Enter` как обычный CR) | `act.SendString('\x1b\r')` для совместимости с Zellij autolock |
 | `copy-on-select` | `mouse_bindings` → `CompleteSelection('ClipboardAndPrimarySelection')` |
 | `mouse-hide-while-typing` | `hide_mouse_cursor_when_typing` |
 | `confirm-close-surface = false` | `window_close_confirmation = 'NeverPrompt'` |
