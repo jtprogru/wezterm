@@ -57,8 +57,18 @@ config.keys = {
   { key = "Enter", mods = "SHIFT", action = act.SendString("\x1b\r") },
 }
 
--- Copy on select: завершение выделения копирует в системный буфер.
+-- Copy on select: WezTerm сам ведёт выделение мышью и копирует на отпускании.
+-- Drag-биндинг нужен, чтобы перехватить выделение у zellij/TUI с включённым
+-- mouse reporting — иначе drag уходит в приложение и WezTerm не видит selection.
+-- Цена: drag-события (ресайз сплитов мышью в nvim/tmux, drag-скроллбары в
+-- htop/btop) больше не попадают в TUI. Click-фокус панелей zellij работает —
+-- одиночный клик без drag по-прежнему проксируется.
 config.mouse_bindings = {
+  {
+    event = { Drag = { streak = 1, button = "Left" } },
+    mods = "NONE",
+    action = act.ExtendSelectionToMouseCursor("Cell"),
+  },
   {
     event = { Up = { streak = 1, button = "Left" } },
     mods = "NONE",
